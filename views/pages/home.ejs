@@ -1,19 +1,65 @@
 <%- include ('../partials/header') %> 
 <%- include ('../partials/menu') %> 
 
+<main style = "height: 80vh; background-image: url('img/background.png'); background-size:40%; height: 830px; width: 1718px"> 
+<div class="container" style="margin-top: 20px;">
+   
+    <div id="carouselExampleDark" class="carousel carousel-dark slide"  data-bs-ride="carousel"> 
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active" data-bs-interval="10000">
+                <img src="img/workingout.jpg" class="d-block w-100" style="height: 600px;" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <p style="font-size: 24px; color: white; background-color: rgba(0, 0, 0, 0.5); padding: 10px;">SweatSocial where you break personal records!</p>
+                </div>
+            </div>
+            <div class="carousel-item" data-bs-interval="5000">
+                <img src="img/workout2.jpg" class="d-block w-100" style="height: 600px;" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <p style="font-size: 24px; color: white; background-color: rgba(0, 0, 0, 0.5); padding: 10px;">SweatSocial where fitness meets friendship, setting and surpassing goals together!</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="img/work3.jpg" class="d-block w-100" style="height: 600px;" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <p style="font-size: 24px; color: white; background-color: rgba(0, 0, 0, 0.5); padding: 10px;">SweatSocial your virtual gym partner, cheering you on every step of the way.!</p>
 
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    
 
-    <div class="container">
-
-        <img alt="Sweaty Mascot" src="img/sweatylogo.jpg" style="display: block; margin: 0 auto; width: 30%;">
-
-        <h1 style="text-align: center;">Welcome to SweatSocial!</h1>
-        <p>
-            
-
-
-
-        </p>
+    <div class="card bg-light mb-3" style="max-width: 90rem; margin-top: 20px;">
+        
+        <div class="card-body" style="height: 21rem;">
+            <div class="row">
+                <div class="col-md-8">
+                    <h1 class="card-title">About Us</h1>
+                    <p class="card-text">SweatSocial is more than just a fitness tracking app it's your ultimate companion on your journey to wellness. Our platform empowers you to seamlessly track your fitness progress while providing a 
+                        supportive community to share your achievements with. With SweatSocial, setting and reaching your fitness goals has never been easier. Whether you're aiming to crush your personal best, conquer new challenges, or simply stay motivated, SweatSocial is here to guide you every step of the way. Join us today and embark on a transformative fitness experience where success is celebrated, goals are achieved, and friendships are forged.</p>
+                </div>
+                <div class="col-md-4"> 
+                    <img alt="Sweaty Mascot" src="img/sweatylogo-removebg-preview.png" style="display: block; margin: 0 auto; width: 80%;">
+                </div>
+            </div>
+        </div>
 
     </div>
+
+</div>
+</main>
+
 
