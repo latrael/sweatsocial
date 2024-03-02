@@ -56,19 +56,133 @@ app.use(
 
 // API ROUTES HERE
 
+
+async function loadProfile(arg) {
+    const fquery = `
+    SELECT *
+    FROM friends
+    RIGHT JOIN users
+    ON friends.useridB = users.user_id
+    WHERE userIDA = $1`;
+    const friendInfo = await db.query(fquery, [arg.user_id]);
+    const userInfo = arg;
+      return {
+        uList: userInfo,
+        fList: friendInfo
+      };
+  }
+
 app.get("/", (req, res) => {
     res.render("pages/home");
   });
 
   app.get("/login", (req, res) => {
-    res.render("pages/login");
+    if (req.session.user == undefined) {
+      res.render("pages/login");
+    } else {
+      res.render("pages/profile", {
+        data: req.session.user,
+        message: "Already logged in",
+      });
+    }
+  });
+
+  app.post("/login", async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    try {
+      const user = await db.oneOrNone("SELECT * FROM users WHERE username = $1", [
+        req.body.username,
+      ]);
+  
+      if (!user) {
+        res.render("pages/login", { message: "User not found", error: "danger" });
+      }
+  
+      const match = await bcrypt.compare(password, user.password);
+      console.log(password);
+      console.log(user.password);
+      console.log(match);
+      if (match == false) {
+        console.log("Incorrect password");
+        res.render("pages/login", {
+          message: "Incorrect password",
+          error: "danger",
+        });
+      } else {
+        req.session.user = user;
+        req.session.save();
+        res.render("pages/profile", {
+          data: await loadProfile(req.session.user),
+          message: "Successfully logged in",
+        });
+      }
+    } catch (error) {
+      console.error("Error: " + error);
+    }
   });
 
   app.get("/register", (req, res) => {
     res.render("pages/register");
   });
 
+  app.post("/register", async (req, res) => {
+    try {
+      //hash the password using bcrypt library
+      const hash = await bcrypt.hash(req.body.password, 10);
+        console.log(req.body.username);
+      const user_exists = await db.oneOrNone(
+        "SELECT * FROM users WHERE username = $1",
+        [req.body.username]
+      );
+  
+    if (user_exists) {
+        res.render("pages/register", {
+          message: "Username already exists. Enter alternate username",
+          error: "danger",
+        });
+      } else {
+        const query =
+          "INSERT INTO users (full_name, username, password) VALUES ($1, $2, $3)";
+        await db.query(query, [
+          req.body.full_name,
+          req.body.username,
+          hash,
+        ]);
+        res.render("pages/login", {
+          data: req.session.user,
+          message: "Successfully registered",
+        });
+      }
+    } catch (error) {
+      console.error("Error while registering user: " + error);
+      res
+        .status(500)
+        .json({ error: "An error occurred while registering the user." });
+    }
+  });
 
+
+
+
+  app.get("/profile", async (req, res) => {
+    console.log(req.session.user);
+    if (req.session.user == undefined) {
+      res.render("pages/login", {
+        message: "Log in to view profile",
+        error: "danger",
+      });
+    } else {
+      try {
+        res.render("pages/profile", {
+          data: await loadProfile(req.session.user),
+        });
+      } catch (error) {
+        console.error("Error in /profile route:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    }
+  });
 
 
 
