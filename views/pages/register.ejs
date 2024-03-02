@@ -7,28 +7,40 @@
 
 <body>
     <main>
-        <div class="container">
-            <h1>Register</h1>
-            <form action="/register" method="POST">
-                <label for="fullName">Full Name</label>
-                <input type="text" class="form-control" id="fullName" placeholder="Enter name" name="fullName">
-                <br>
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-               <br> 
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" placeholder="Enter username" name="username">
-                <br>
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" aria-describedby="password" placeholder="Enter password" name="password">
-                <br>
-                <button type="submit" class="btn btn-primary">Register</button>
-                <small id="help" class="form-text text-muted">
-                Already have an account? <a href='/login'>Login</a>
-                </small>
-            </form>
+        <div class="row justify-content-center align-items-center" style = "height: 80vh">
+            <div class="col-md-4">
+                <div class="card" id="hobby-card-1">
+                    <div class="border">
+                <div class="container">
+                    <img alt="Sweaty Mascot" src="img/sweatylogo.jpg" style="display: block; margin: 0 auto; width: 30%;">
+                    
+                    <h3 style= "text-align:center">Create an account</h3>
+                    <h6 style = "text-align: center;">to continue to SweatSocial</h6>
+                    <br>
+                    <form action="/login" method="POST">
+                        <label for="fullname" style = "display:block; padding-left:120px;">Full Name</label>
+                        <input type="text" size ="20" class="form-control" id="username" aria-describedby="username" placeholder="Enter your full name" name="username" style = "width: 300px; margin:auto;">
+                        <br>
+                        <label for="username" style = "display:block; padding-left:120px;">Username</label>
+                        <input type="text" size ="20" class="form-control" id="username" aria-describedby="username" placeholder="Enter username" name="username" style = "width: 300px; margin:auto;">
+                        <br>
+                        <label for="password" style = "display:block; padding-left:120px;">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" style = "width: 300px; margin:auto;">
+                        <br>
+                        <button type="submit" class="btn btn-outline-primary" style = "margin-left: 115px;">Register</button>
+                        <small id="help" class="form-text text-muted" style = "position:relative; left:113px">
+                            <br></br>
+                            Already have an account? <a href='/login'>Login</a>
+                        </small>
+                        <br></br>
+                    </form>
+                </div>
+                </div>
+                </div>
+            </div>
         </div>
+            
+        
     </main>
-  </body>
-  <%- include ('../partials/footer') %>
+</body>
+<%- include ('../partials/footer') %>

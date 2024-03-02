@@ -7,20 +7,37 @@
 
 <body>
     <main>
-        <div class="container">
-            <h1>Login</h1>
-            <form action="/login" method="POST">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" aria-describedby="username" placeholder="Enter username" name="username">
-                <br>
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
-                <br>
-                <button type="submit" class="btn btn-outline-primary">Login</button>
-                <small id="help" class="form-text text-muted">
-                    New here? <a href='/register'>Register</a>
-            </form>
+        <div class="row justify-content-center align-items-center" style = "height: 80vh">
+            <div class="col-md-4">
+                <div class="card" id="hobby-card-1">
+                    <div class="border">
+                <div class="container">
+                    <img alt="Sweaty Mascot" src="img/sweatylogo.jpg" style="display: block; margin: 0 auto; width: 30%;">
+                    
+                    <h3 style= "text-align:center">Sign in</h3>
+                    <h6 style = "text-align: center;">to continue to SweatSocial</h6>
+                    <br>
+                    <form action="/login" method="POST">
+                        <label for="username" style = "display:block; padding-left:120px;">Username</label>
+                        <input type="text" size ="20" class="form-control" id="username" aria-describedby="username" placeholder="Enter username" name="username" style = "width: 300px; margin:auto;">
+                        <br>
+                        <label for="password" style = "display:block; padding-left:120px;">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" style = "width: 300px; margin:auto;">
+                        <br>
+                        <button type="submit" class="btn btn-outline-primary" style = "margin-left: 115px;">Login</button>
+                        <small id="help" class="form-text text-muted" style = "position:relative; left:113px">
+                            <br></br>
+                            New here? <a href='/register'>Register</a>
+                        </small>
+                        <br></br>
+                    </form>
+                </div>
+                </div>
+                </div>
+            </div>
         </div>
+            
+        
     </main>
 </body>
 <%- include ('../partials/footer') %>
