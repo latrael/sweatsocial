@@ -56,7 +56,15 @@ app.use(
 
 // API ROUTES HERE
 
+const pool = new Pool({
+    host: "db", // the database server
+    port: 5432, // the database port
+    database: process.env.POSTGRES_DB, // the database name
+    user: process.env.POSTGRES_USER, // the user account to connect with
+    password: process.env.POSTGRES_PASSWORD, // the password of the user account
+  });
 
+  
 async function loadProfile(arg) {
     const fquery = `
     SELECT *
@@ -186,6 +194,115 @@ app.get("/", (req, res) => {
 
 
 
+
+
+  app.get("/friends", async (req, res) => {
+    if(req.session.user == undefined){
+      res.render("pages/login")
+    }
+    else{
+      try{
+         const allUsers = await db.any("SELECT * FROM users WHERE user_id != $1", [
+          req.session.user.user_id,
+         ]);
+        const friends = await db.any("SELECT * FROM friends JOIN users ON friends.userIDB = users.user_id WHERE friends.userIDA = $1", [
+         req.session.user.user_id, 
+        ]);
+        var all_users = [];
+        var hold = 0;
+        for(i = 0; i < allUsers.length; i++){
+          var add = true;
+          for(j=0; j < friends.length; j++){
+            if(friends[j].useridb == allUsers[i].user_id){
+              add = false;
+            }
+          }
+          if(add == true){
+            all_users[hold] = allUsers[i];
+            hold = hold + 1;
+          }
+        }
+        if(!friends){
+          res.render("pages/friends", {
+            user: "empty",
+            friend: "no friends",
+            empty: " ",
+            allUsers: all_users,
+          });
+        }
+        var status = 'friends';
+        const friends_check = await db.any("SELECT * FROM friends JOIN users ON friends.userIDB = users.user_id WHERE friends.userIDA = $1 AND friends.status = $2", [
+          req.session.user.user_id, status,
+         ]);
+          res.render("pages/friends", {
+            user: "empty",
+            friend: friends,
+            empty: " ",
+            allUsers: all_users,
+          });
+      }
+      catch (error) {
+        console.error("Error: " + error);
+      }
+    }
+  }); 
+
+  app.get("/friendProfile/:friendID", async (req, res) => {
+    try {
+      const profile = req.params.friendID;
+      const p = "SELECT * FROM users WHERE user_id = $1";
+      const { rows } = await pool.query(p, [profile]);
+      console.log(rows[0]);
+      res.render("pages/friendProfile", {
+        data: await loadProfile(rows[0]),
+      });
+    } catch (error) {
+      console.error("Error in /profile route:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  });
+
+  app.post("/add_friend",async (req, res) =>{
+    const user1 = req.session.user.user_id;
+    try{
+      const query = "INSERT INTO friends (userIDA, userIDB, status) VALUES ($1, $2, $3) returning *";
+      await db.one(query, [user1, req.body.userADD, 'sent']);
+      const query2 = "INSERT INTO friends (userIDA, userIDB, status) VALUES ($1, $2, $3) returning *";
+      await db.one(query2, [req.body.userADD,user1, 'pending']);
+      res.redirect("/friends")
+    }
+    catch (error) {
+      console.error("Error: " + error);
+    }
+  });
+
+
+  app.post("/accept_friend",async (req, res) =>{
+    const user1 = req.session.user.user_id;
+    try{
+      const query = "UPDATE friends SET status = 'friends' WHERE userIDA = $1 AND userIDB = $2 returning *";
+      await db.one(query, [user1, req.body.user_id]);
+      const query2 = "UPDATE friends SET status = 'friends' WHERE userIDA = $1 AND userIDB = $2 returning *";
+      await db.one(query2, [req.body.user_id,user1]);
+      res.redirect("/friends")
+    }
+    catch (error) {
+      console.error("Error: " + error);
+    }
+  });
+  
+  app.post("/remove_friend",async (req, res) =>{
+    try{
+      const query = "DELETE FROM friends WHERE userIDB = $1 AND userIDA =$2 returning *";
+      await db.one(query, [req.body.user_id,req.session.user.user_id]);
+      const query2 = "DELETE FROM friends WHERE userIDA = $1 AND userIDB =$2 returning *";
+      await db.one(query2, [req.body.user_id,req.session.user.user_id]);
+      res.redirect("/friends")
+    }
+    catch (error) {
+      console.error("Error: " + error);
+    }
+  });
 //start server
 app.listen(3000);
 console.log('Server is listening on port 3000');
