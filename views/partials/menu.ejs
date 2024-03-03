@@ -65,7 +65,12 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="profileDropdown" style="min-width:auto; left:-20px;">
             <li><a class="dropdown-item" href="/profile">Profile</a></li>
-            <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+            <% if(userlog) { %>
+              <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+            <% } else { %>
+              <li><a class="dropdown-item" href="/login">Sign in</a></li>
+              <li><a class="dropdown-item" href="/register">Register</a></li>
+            <% } %>
           </ul>
         </li>
       </ul>

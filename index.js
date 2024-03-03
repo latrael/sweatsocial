@@ -61,22 +61,28 @@ app.use(
 app.get("/logout", function (req, res) {
     req.session.user = null;
     console.log(req.session);
-    res.render("pages/login", { message: "Successfully logged out" });
+    res.render("pages/login", { message: "Successfully logged out", userlog: req.session.user});
   });
 
 
 app.get("/addexercise", (req, res) => {
-    res.render("pages/addexercise", {data: null});
+    res.render("pages/addexercise", {data: null, userlog: req.session.user});
   });
 
 app.get("/myexercises", async (req, res) => {
-    const query = "SELECT * FROM users_to_exercises WHERE user_id = $1";
+  if(req.session.user == undefined){
+    res.render("pages/login", {message: "Log in to view exercises", error: "danger", userlog: req.session.user
+  });
+} else {
+  const query = "SELECT * FROM users_to_exercises WHERE user_id = $1";
     try {
         const exercises = await db.any(query, [req.session.user.user_id]);
-        res.render("pages/myexercises", {data: exercises});
+        res.render("pages/myexercises", {data: exercises, userlog: req.session.user});
     } catch(error) {
         console.error("Error: " + error);
     }
+}
+    
     
 });
 
@@ -93,7 +99,7 @@ app.post("/add_exercise_to_user", async (req, res) => {
   try{
     const query = "INSERT INTO users_to_exercises(user_id, exercise_name, exercise_type, muscle_group, equipment ,difficulty, instructions) VALUES ($1, $2, $3 , $4 , $5 , $6 , $7) RETURNING *";
     await db.one(query, [user1, name1,exercise1,muscle1,equipment1,difficulty1,instructions1]);
-    res.redirect("/myexercises");
+    res.redirect("/myexercises", {userlog: req.session.user});
   }
   catch (error) {
     console.error("Error: " + error);
@@ -113,7 +119,7 @@ app.post("/addexercise", async (req, res) => {
     },function(error, response, body) {
         if(error) return console.error('Request failed:', error);
         else if(response.statusCode != 200) return console.error('Error:', response.statusCode, body.toString('utf8'));
-        res.render("pages/addexercise", { data: JSON.parse(body) });
+        res.render("pages/addexercise", { data: JSON.parse(body), userlog: req.session.user});
 });
 
 });
@@ -143,16 +149,17 @@ async function loadProfile(arg) {
   }
 
 app.get("/", (req, res) => {
-    res.render("pages/home");
+    res.render("pages/home", {userlog: req.session.user});
   });
 
   app.get("/login", (req, res) => {
     if (req.session.user == undefined) {
-      res.render("pages/login");
+      res.render("pages/login", {userlog: req.session.user});
     } else {
       res.render("pages/profile", {
         data: req.session.user,
         message: "Already logged in",
+        error: "danger", userlog: req.session.user
       });
     }
   });
@@ -166,7 +173,7 @@ app.get("/", (req, res) => {
       ]);
   
       if (!user) {
-        res.render("pages/login", { message: "User not found", error: "danger" });
+        res.render("pages/login", { message: "User not found", error: "danger", userlog: req.session.user});
       }
   
       const match = await bcrypt.compare(password, user.password);
@@ -177,14 +184,14 @@ app.get("/", (req, res) => {
         console.log("Incorrect password");
         res.render("pages/login", {
           message: "Incorrect password",
-          error: "danger",
+          error: "danger", userlog: req.session.user
         });
       } else {
         req.session.user = user;
         req.session.save();
         res.render("pages/profile", {
           data: await loadProfile(req.session.user),
-          message: "Successfully logged in",
+          message: "Successfully logged in", userlog: req.session.user
         });
       }
     } catch (error) {
@@ -193,7 +200,7 @@ app.get("/", (req, res) => {
   });
 
   app.get("/register", (req, res) => {
-    res.render("pages/register");
+    res.render("pages/register", {userlog: req.session.user});
   });
 
   app.post("/register", async (req, res) => {
@@ -209,7 +216,7 @@ app.get("/", (req, res) => {
     if (user_exists) {
         res.render("pages/register", {
           message: "Username already exists. Enter alternate username",
-          error: "danger",
+          error: "danger", userlog: req.session.user
         });
       } else {
         const query =
@@ -221,7 +228,7 @@ app.get("/", (req, res) => {
         ]);
         res.render("pages/login", {
           data: req.session.user,
-          message: "Successfully registered",
+          message: "Successfully registered", userlog: req.session.user
         });
       }
     } catch (error) {
@@ -240,12 +247,12 @@ app.get("/", (req, res) => {
     if (req.session.user == undefined) {
       res.render("pages/login", {
         message: "Log in to view profile",
-        error: "danger",
+        error: "danger", userlog: req.session.user
       });
     } else {
       try {
         res.render("pages/profile", {
-          data: await loadProfile(req.session.user),
+          data: await loadProfile(req.session.user), userlog: req.session.user
         });
       } catch (error) {
         console.error("Error in /profile route:", error);
@@ -260,7 +267,7 @@ app.get("/", (req, res) => {
 
   app.get("/friends", async (req, res) => {
     if(req.session.user == undefined){
-      res.render("pages/login")
+      res.render("pages/login",{message: "Log in to view friends", error: "danger", userlog: req.session.user});
     }
     else{
       try{
@@ -289,7 +296,7 @@ app.get("/", (req, res) => {
             user: "empty",
             friend: "no friends",
             empty: " ",
-            allUsers: all_users,
+            allUsers: all_users, userlog: req.session.user
           });
         }
         var status = 'friends';
@@ -300,7 +307,7 @@ app.get("/", (req, res) => {
             user: "empty",
             friend: friends,
             empty: " ",
-            allUsers: all_users,
+            allUsers: all_users, userlog: req.session.user
           });
       }
       catch (error) {
@@ -314,9 +321,13 @@ app.get("/", (req, res) => {
       const profile = req.params.friendID;
       const p = "SELECT * FROM users WHERE user_id = $1";
       const { rows } = await pool.query(p, [profile]);
+      const w = "SELECT * FROM users_to_exercises WHERE user_id = $1";
+      const workouts = await db.any(w, [profile]);
       console.log(rows[0]);
+      console.log(workouts);
       res.render("pages/friendProfile", {
         data: await loadProfile(rows[0]),
+        workouts: workouts, userlog: req.session.user
       });
     } catch (error) {
       console.error("Error in /profile route:", error);
@@ -331,7 +342,7 @@ app.get("/", (req, res) => {
       await db.one(query, [user1, req.body.userADD, 'sent']);
       const query2 = "INSERT INTO friends (userIDA, userIDB, status) VALUES ($1, $2, $3) returning *";
       await db.one(query2, [req.body.userADD,user1, 'pending']);
-      res.redirect("/friends")
+      res.redirect("/friends", {userlog: req.session.user});
     }
     catch (error) {
       console.error("Error: " + error);
@@ -346,7 +357,7 @@ app.get("/", (req, res) => {
       await db.one(query, [user1, req.body.user_id]);
       const query2 = "UPDATE friends SET status = 'friends' WHERE userIDA = $1 AND userIDB = $2 returning *";
       await db.one(query2, [req.body.user_id,user1]);
-      res.redirect("/friends")
+      res.redirect("/friends", {userlog: req.session.user});
     }
     catch (error) {
       console.error("Error: " + error);
@@ -359,7 +370,7 @@ app.get("/", (req, res) => {
       await db.one(query, [req.body.user_id,req.session.user.user_id]);
       const query2 = "DELETE FROM friends WHERE userIDA = $1 AND userIDB =$2 returning *";
       await db.one(query2, [req.body.user_id,req.session.user.user_id]);
-      res.redirect("/friends")
+      res.redirect("/friends", {userlog: req.session.user});
     }
     catch (error) {
       console.error("Error: " + error);

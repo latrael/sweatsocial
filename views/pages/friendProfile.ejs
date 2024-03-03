@@ -1,8 +1,20 @@
 <%- include ('../partials/header') %> 
 <%- include ('../partials/menu') %>
-<head>
-
-</head>
+<%- include ('../partials/message') %>
+<style>
+    .card {
+      padding-top: 20px; 
+      transition: transform 0.3s ease; 
+      margin-top: 20px;
+      border: 2px solid rgb(227, 116, 25); 
+    }
+  
+    .card:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transform: translateY(-5px); 
+  
+    }
+  </style>
 <body>
 
     <main>
@@ -11,11 +23,8 @@
             <h1>Profile: <%=data.uList.full_name%></h1>
 
             <div class="row">
-                <div class="col-md-4 offset-md-0 mt-4" >
 
-                </div>
-
-                <div class="col-md-4 offset-md-0 mt-4" >
+                <div class="col-md-6 offset-md-0 mt-6" >
                     <div class="list-group">
                         <h5 class="list-group-item list-group-item-action active"  aria-current="true">Account Information</h5>
                         <a class="list-group-item list-group-item-action">Name: <%= data.uList.full_name %></a>
@@ -26,7 +35,7 @@
                     <a class="btn btn-outline-secondary" role="button">Change Password</a> -->
                 </div>
 
-              <div class="col-md-4 offset-md-0 mt-4" >
+              <div class="col-md-6 offset-md-0 mt-6" >
                     <div class="list-group">
                         <h5 class="list-group-item list-group-item-action active"  aria-current="true">Friends</h5>
                           <% data.fList.forEach(friend => { %>
@@ -37,9 +46,32 @@
                     <br>
                     <!-- <a class="btn btn-outline-success" href='/friends' role="button">Add Friend</a> -->
                 </div>
+                <br>
+                <h5>Their Exercises:</h5>
 
                 
 
+            </div>
+
+            <div class="row">
+                <% if (workouts && workouts.length > 0) { %>
+                    <% workouts.forEach(workout => { %>
+                        <div class="col-md-6 mb-6">
+                            <div class="card">
+                              <div class="card-header">
+                                <h5 class="card-title"><%= workout.exercise_name %></h5>
+                              </div>
+                              <div class="card-body">
+                                <p class="card-text">Type: <%= workout.exercise_type %></p>
+                                <p class="card-text">Muscle: <%= workout.muscle_group %></p>
+                                <p class="card-text">Equipment: <%= workout.equipment %></p>
+                                <p class="card-text">Difficulty: <%= workout.difficulty %></p>
+                                <p class="card-text">Instructions: <%= workout.instructions %></p>
+                              </div>
+                            </div>
+                          </div>
+                    <% }); %>
+                <% } %>
             </div>
         </div>
         
