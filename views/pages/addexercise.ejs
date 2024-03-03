@@ -50,12 +50,16 @@
 <div>
 <% if (data && data.length > 0) { %>
 <% data.forEach(exercise => { %>
-    <div class="card" style="width: 18rem;">
-        <h5 class="card-title"><%= exercise.name %></h5>
-        <p class="card-text">Type: <%= exercise.type %></p>
-        <p class="card-text">Muscle: <%= exercise.muscle %></p>
-        <p class="card-text">Difficulty: <%= exercise.difficulty %></p>
-        <p class="card-text">Instructions: <%= exercise.instructions %></p>
+    <div class="card" style="width: 80rem;">
+        <h5 class="card-title" id = "name"><%= exercise.name %></h5>
+        <p class="card-text" id = "type">Type: <%= exercise.type %></p>
+        <p class="card-text" id = "muscle">Muscle: <%= exercise.muscle %></p>
+        <p class="card-text" id = "equipment">Equipment: <%= exercise.equipment %></p>
+        <p class="card-text" id = "difficulty">Difficulty: <%= exercise.difficulty %></p>
+        <p class="card-text" id = "instructions">Instructions: <%= exercise.instructions %></p>
+        <a class="btn btn-outline-success" href='/add_exercise_to_user' role="button">Add exercise to workout</a>
+        
+        
     <% }); %>
     <% } %>
 </div>

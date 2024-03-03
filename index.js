@@ -72,6 +72,27 @@ app.get("/addexercise", (req, res) => {
 app.get("/myexercises", (req, res) => {
     res.render("pages/myexercises");
 });
+
+app.post("/add_exercise_to_user", async (req, res) => {
+  
+  const user1 = req.session.user.user_id;
+  var name1 = req.body.name
+  var exercise1 = req.body.type;
+  var muscle1 = req.body.muscle;
+  var equipment1 = req.body.equipment;
+  var difficulty1 = req.body.difficulty;
+  var instructions1 = req.body.instructions;
+  try{
+    const query = "INSERT INTO users_to_exercises (user_id, exercise_name, exercise_type, muscle_group, equipment ,difficulty, instructions) VALUES ($1, $2, $3 , $4 , $5 , $6 , $7) returning *";
+    await db.one(query, [user1, name1,exercise1,muscle1,equipment1,difficulty1,instructions1]);
+    res.redirect("/myexercises");
+  }
+  catch (error) {
+    console.error("Error: " + error);
+
+  }
+});
+
 app.post("/addexercise", async (req, res) => {
     var muscle = req.body.muscle;
     var exercise = req.body.exercise_type;
