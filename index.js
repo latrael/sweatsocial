@@ -69,6 +69,9 @@ app.get("/addexercise", (req, res) => {
     res.render("pages/addexercise", {data: null});
   });
 
+app.get("/myexercises", (req, res) => {
+    res.render("pages/myexercises");
+});
 app.post("/addexercise", async (req, res) => {
     var muscle = req.body.muscle;
     var exercise = req.body.exercise_type;
@@ -81,7 +84,6 @@ app.post("/addexercise", async (req, res) => {
     },function(error, response, body) {
         if(error) return console.error('Request failed:', error);
         else if(response.statusCode != 200) return console.error('Error:', response.statusCode, body.toString('utf8'));
-        else console.log(body)
         res.render("pages/addexercise", { data: JSON.parse(body) });
 });
 
