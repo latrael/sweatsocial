@@ -16,3 +16,16 @@ CREATE TABLE friends (
     FOREIGN KEY (userIDA) REFERENCES users(user_id),
     FOREIGN KEY (userIDB) REFERENCES users(user_id)
 );
+
+DROP TABLE IF EXISTS users_to_exercises CASCADE;
+CREATE TABLE users_to_exercises (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id),
+    exercise_name VARCHAR(100),
+    exercise_type VARCHAR(100),
+    muscle_group VARCHAR(100),
+    equipment VARCHAR(100),
+    difficulty VARCHAR(100),
+    instructions TEXT,
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(user_id)
+)
