@@ -24,8 +24,9 @@
                             <% for(var i=0; i < allUsers.length; i++) {%>
                                 <form action="add_friend" method="POST">
                                     <div class="form-group">
+                                        <img src="img/profile-avatar.png" alt="Profile Guy" height="30" class="d-inline-block align-text-top">
                                         <input type="hidden" id="userADD" name="userADD" value="<%= allUsers[i].user_id %>">
-                                        <button class="list-group-item list-group-item-action" style="display: inline-block; width: 73%; text-align: left;"><%= allUsers[i].full_name %></button>
+                                        <button class="list-group-item list-group-item-action" style="display: inline-block; width: 50%; text-align: left;"><%= allUsers[i].full_name %></button>
                                         <button type="submit" class="btn btn-primary" style="width: 25%; display: inline-block;" >Add</button>
                                     </div> 
                                 </form>
@@ -188,4 +189,3 @@
             </div>
     </main>
 </body>
-<%- include ('../partials/footer') %>

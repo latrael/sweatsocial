@@ -1,31 +1,52 @@
 <%- include ('../partials/header') %> 
 <%- include ('../partials/menu') %>
 
-<div class="card mb-3">
-    <h3 class="card-header">Your Exercises</h3>
-    <div class="card-body">
-        <% if (data && data.length > 0) { %>
-            <% data.forEach(exercise => { %>
-                <h5 id = "name"><%= exercise.exercise_name %></h5>
-                <p id = "type">Type: <%= exercise.exercise_type %></p>
-                <p id = "muscle">Muscle: <%= exercise.muscle_group %></p>
-                <p id = "equipment">Equipment: <%= exercise.equipment %></p>
-                <p id = "difficulty">Difficulty: <%= exercise.difficulty %></p>
-                <p id = "instructions">Instructions: <%= exercise.instructions %></p>
-            <% }); %>
-        <% } %>
-    </div>
+<style>
+  .card {
+    padding-top: 20px; 
+    transition: transform 0.3s ease; 
+    margin-top: 20px;
+    border: 2px solid rgb(227, 116, 25); 
+  }
 
-    <div class="card-body">
-      <p class="card-text"></p>
-    </div>
+  .card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px); 
 
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item">Looking for more exercises?<li>
-      <a class="btn btn-outline-success" href='/addexercise' role="button">Add exercise</a>
-    </ul>
-    
+  }
+</style>
 
+<div class="container">
+  <img alt="Sweaty Mascot" src="img/workoutPSA.png" style="display: block; margin: 0 auto; width: 28%;">
+  <div class="row">
+    <% if (data && data.length > 0) { %>
+      <% data.forEach(exercise => { %>
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title"><%= exercise.exercise_name %></h5>
+            </div>
+            <div class="card-body">
+              <p class="card-text">Type: <%= exercise.exercise_type %></p>
+              <p class="card-text">Muscle: <%= exercise.muscle_group %></p>
+              <p class="card-text">Equipment: <%= exercise.equipment %></p>
+              <p class="card-text">Difficulty: <%= exercise.difficulty %></p>
+              <p class="card-text">Instructions: <%= exercise.instructions %></p>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    <% } %>
   </div>
 
+  <div class="row">
+    <div class="col-md-12">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Looking for more exercises?</li>
+ 
+          <a class="btn btn-outline-success" href='/addexercise' role="button" style = "margin-bottom: 50px;">Add exercise</a>
+      
+      </ul>
+    </div>
   </div>
+</div>

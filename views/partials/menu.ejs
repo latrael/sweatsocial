@@ -1,41 +1,74 @@
+<style>
+ 
+  .navbar-toggler {
+    border: none;
+  }
+
+  .navbar-nav .nav-link {
+    font-weight: bold;
+    color: #fff;
+    transition: color 0.3s ease;
+    margin-right: 15px;
+  }
+
+  .navbar-nav .nav-link:hover {
+    color: #212529; 
+  }
+
+  .dropdown-menu {
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .dropdown-item {
+    color: #f8f9fa;
+  }
+
+  .dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #212529;
+  }
+</style>
 
 <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
-    <div class="container-fluid">
-      <!-- Logo or Brand Name -->
-      <a class="navbar-brand" href="/">SweatSocial</a>
-  
-      <!-- Toggler/Collapsible Button -->
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-  
-      <!-- Navbar Links -->
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/friends">Friends</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/myexercises">My Exercises</a>
-          </li>
-        </ul>
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="/profile">Account Profile</a>
-          </li>
-        </ul>
-      </div>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+      <img src="img/sweatparent.png" alt="SweatSocial Logo" height="30" class="d-inline-block align-text-top">
+      SweatSocial
+    </a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/friends">Friends</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/myexercises">My Exercises</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="img/profile-avatar.png" alt="Profile Guy" height="30" class="d-inline-block align-text-top">
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="profileDropdown" style="min-width:auto; left:-20px;">
+            <li><a class="dropdown-item" href="/profile">Profile</a></li>
+            <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+          </ul>
+        </li>
+      </ul>
     </div>
-  </nav>
-  
+  </div>
+</nav>
