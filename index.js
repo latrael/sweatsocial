@@ -99,7 +99,7 @@ app.post("/add_exercise_to_user", async (req, res) => {
   try{
     const query = "INSERT INTO users_to_exercises(user_id, exercise_name, exercise_type, muscle_group, equipment ,difficulty, instructions) VALUES ($1, $2, $3 , $4 , $5 , $6 , $7) RETURNING *";
     await db.one(query, [user1, name1,exercise1,muscle1,equipment1,difficulty1,instructions1]);
-    res.redirect("/myexercises", {userlog: req.session.user});
+    res.redirect("/myexercises");
   }
   catch (error) {
     console.error("Error: " + error);
@@ -342,7 +342,7 @@ app.get("/", (req, res) => {
       await db.one(query, [user1, req.body.userADD, 'sent']);
       const query2 = "INSERT INTO friends (userIDA, userIDB, status) VALUES ($1, $2, $3) returning *";
       await db.one(query2, [req.body.userADD,user1, 'pending']);
-      res.redirect("/friends", {userlog: req.session.user});
+      res.redirect("/friends");
     }
     catch (error) {
       console.error("Error: " + error);
@@ -357,7 +357,7 @@ app.get("/", (req, res) => {
       await db.one(query, [user1, req.body.user_id]);
       const query2 = "UPDATE friends SET status = 'friends' WHERE userIDA = $1 AND userIDB = $2 returning *";
       await db.one(query2, [req.body.user_id,user1]);
-      res.redirect("/friends", {userlog: req.session.user});
+      res.redirect("/friends");
     }
     catch (error) {
       console.error("Error: " + error);
@@ -370,12 +370,97 @@ app.get("/", (req, res) => {
       await db.one(query, [req.body.user_id,req.session.user.user_id]);
       const query2 = "DELETE FROM friends WHERE userIDA = $1 AND userIDB =$2 returning *";
       await db.one(query2, [req.body.user_id,req.session.user.user_id]);
-      res.redirect("/friends", {userlog: req.session.user});
+      res.redirect("/friends");
     }
     catch (error) {
       console.error("Error: " + error);
     }
   });
+
+
+  app.post("/user_search", async (req, res) =>{
+    try{
+        const allUsers = await db.any("SELECT * FROM users WHERE user_id != $1", [
+          req.session.user.user_id,
+         ]);
+        const friends = await db.any("SELECT * FROM friends JOIN users ON friends.userIDB = users.user_id WHERE friends.userIDA = $1", [
+         req.session.user.user_id, 
+        ]);
+        var all_users = [];
+        var hold = 0;
+        for(i = 0; i < allUsers.length; i++){
+          var add = true;
+          for(j=0; j < friends.length; j++){
+            if(friends[j].useridb == allUsers[i].user_id){
+              add = false;
+            }
+          }
+          if(add == true){
+            all_users[hold] = allUsers[i];
+            hold = hold + 1;
+          }
+        }
+  
+        var status = 'friends';
+        const friends_check = await db.any("SELECT * FROM friends JOIN users ON friends.userIDB = users.user_id WHERE friends.userIDA = $1 AND friends.status = $2", [
+          req.session.user.user_id, status,
+         ]);
+  
+        
+      const users = await db.oneOrNone("SELECT * FROM users WHERE username = $1", [
+        req.body.user,
+      ]);
+      if(!users || req.body.user == req.session.user.username){
+        res.render("pages/friends", {
+          user: "NOT_FOUND",
+          friend: friends,
+          empty: " ",
+          allUsers: all_users, userlog: req.session.user
+        });
+      }
+      else{
+        if(users.username == req.body.user){
+          var friend = "false";
+          for(i = 0; i < friends.length; i++){
+            if(users.username == friends[i].username){
+              if(friends[i].status == "friends"){
+                friend = "true";
+              }
+              else if(friends[i].status == "pending"){
+                friend = "pending";
+              }
+              else{
+                friend = "sent";
+              }
+            }
+          }
+          res.render("pages/friends", {
+            user: users,
+            friend: friends,
+            empty: friend,
+            allUsers: all_users,userlog: req.session.user
+          });
+        }
+        else{
+          res.render("pages/friends", {
+            user: "empty",
+            friend: friends,
+            empty: " ",
+            allUsers: all_users, userlog: req.session.user
+          });
+        }
+      }
+    }
+    catch (error) {
+      console.error("Error: " + error);
+    }
+   });
+
+   app.post("/test",async (req, res) =>{
+    res.redirect("/friends")
+});
+
+
 //start server
 app.listen(3000);
 console.log('Server is listening on port 3000');
