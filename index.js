@@ -6,7 +6,9 @@ const bodyParser = require("body-parser");
 const session = require("express-session"); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require("bcrypt"); //  To hash passwords
 const axios = require("axios"); // To make HTTP requests from our server. We'll learn more about it in Part B.
+const request = require('request');
 app.use(express.static("src"));
+
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -56,6 +58,35 @@ app.use(
 
 // API ROUTES HERE
 
+app.get("/logout", function (req, res) {
+    req.session.user = null;
+    console.log(req.session);
+    res.render("pages/login", { message: "Successfully logged out" });
+  });
+
+
+app.get("/addexercise", (req, res) => {
+    res.render("pages/addexercise", {data: null});
+  });
+
+app.post("/addexercise", async (req, res) => {
+    var muscle = req.body.muscle;
+    var exercise = req.body.exercise_type;
+    var difficulty = req.body.difficulty;
+    request.get({
+        url: 'https://api.api-ninjas.com/v1/exercises?muscle=' + muscle + '&type=' + exercise + '&difficulty=' + difficulty,
+        headers: {
+            'X-Api-Key': process.env.API_KEY
+        },
+    },function(error, response, body) {
+        if(error) return console.error('Request failed:', error);
+        else if(response.statusCode != 200) return console.error('Error:', response.statusCode, body.toString('utf8'));
+        else console.log(body)
+        res.render("pages/addexercise", { data: JSON.parse(body) });
+});
+
+});
+
 const pool = new Pool({
     host: "db", // the database server
     port: 5432, // the database port
@@ -64,7 +95,7 @@ const pool = new Pool({
     password: process.env.POSTGRES_PASSWORD, // the password of the user account
   });
 
-  
+
 async function loadProfile(arg) {
     const fquery = `
     SELECT *
