@@ -69,8 +69,15 @@ app.get("/addexercise", (req, res) => {
     res.render("pages/addexercise", {data: null});
   });
 
-app.get("/myexercises", (req, res) => {
-    res.render("pages/myexercises");
+app.get("/myexercises", async (req, res) => {
+    const query = "SELECT * FROM users_to_exercises WHERE user_id = $1";
+    try {
+        const exercises = await db.any(query, [req.session.user.user_id]);
+        res.render("pages/myexercises", {data: exercises});
+    } catch(error) {
+        console.error("Error: " + error);
+    }
+    
 });
 
 app.post("/add_exercise_to_user", async (req, res) => {
@@ -82,8 +89,9 @@ app.post("/add_exercise_to_user", async (req, res) => {
   var equipment1 = req.body.equipment;
   var difficulty1 = req.body.difficulty;
   var instructions1 = req.body.instructions;
+  console.log(name1 + "This is the name of the exercise");
   try{
-    const query = "INSERT INTO users_to_exercises (user_id, exercise_name, exercise_type, muscle_group, equipment ,difficulty, instructions) VALUES ($1, $2, $3 , $4 , $5 , $6 , $7) returning *";
+    const query = "INSERT INTO users_to_exercises(user_id, exercise_name, exercise_type, muscle_group, equipment ,difficulty, instructions) VALUES ($1, $2, $3 , $4 , $5 , $6 , $7) RETURNING *";
     await db.one(query, [user1, name1,exercise1,muscle1,equipment1,difficulty1,instructions1]);
     res.redirect("/myexercises");
   }

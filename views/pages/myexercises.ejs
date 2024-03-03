@@ -4,6 +4,16 @@
 <div class="card mb-3">
     <h3 class="card-header">Your Exercises</h3>
     <div class="card-body">
+        <% if (data && data.length > 0) { %>
+            <% data.forEach(exercise => { %>
+                <h5 id = "name"><%= exercise.exercise_name %></h5>
+                <p id = "type">Type: <%= exercise.exercise_type %></p>
+                <p id = "muscle">Muscle: <%= exercise.muscle_group %></p>
+                <p id = "equipment">Equipment: <%= exercise.equipment %></p>
+                <p id = "difficulty">Difficulty: <%= exercise.difficulty %></p>
+                <p id = "instructions">Instructions: <%= exercise.instructions %></p>
+            <% }); %>
+        <% } %>
     </div>
 
     <div class="card-body">
